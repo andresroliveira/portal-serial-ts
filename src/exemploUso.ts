@@ -5,9 +5,9 @@ import { getSerialState, globalSerialState } from "./serialState.js";
 // Criar instância do serial manager
 const serial = new SerialManager();
 
-// EXATAMENTE O QUE VOCÊ QUERIA! 🎯
+// EXATAMENTE O QUE VOCÊ QUERIA!
 serial.on("data", (data: string) => {
-    console.log("📡 Dados recebidos:", data);
+    console.log("Dados recebidos:", data);
 
     // Acessar estado global
     console.log("Estado atual:", getSerialState());
@@ -17,15 +17,15 @@ serial.on("data", (data: string) => {
 
 // Outros eventos disponíveis
 serial.on("connected", (port: any) => {
-    console.log("🔗 Conectado à porta:", port);
+    console.log("Conectado à porta:", port);
 });
 
 serial.on("disconnected", () => {
-    console.log("❌ Desconectado");
+    console.log("Desconectado");
 });
 
 serial.on("error", (error: any) => {
-    console.error("⚠️ Erro:", error);
+    console.error("Erro:", error);
 });
 
 // Usar o serial

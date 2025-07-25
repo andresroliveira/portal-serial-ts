@@ -6,7 +6,7 @@ async function main() {
         return;
     }
 
-    console.log("Web Serial API disponível:", navigator.serial);
+    // console.log("Web Serial API disponível:", navigator.serial);
 
     try {
         const app = new AppController();

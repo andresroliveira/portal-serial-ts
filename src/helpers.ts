@@ -1,4 +1,4 @@
-import { Dispositivo } from "./devices";
+import { Devices } from "./devices.js";
 
 export function toDevice(dispJson: Record<string, unknown>) {
     if (
@@ -51,7 +51,7 @@ export function toDevice(dispJson: Record<string, unknown>) {
     teS = isNaN(teS) ? 0 : teS;
     rpmS = isNaN(rpmS) ? 0 : rpmS;
 
-    return new Dispositivo(
+    return new Devices(
         type,
         serialSlave,
         macSlave,
@@ -66,7 +66,7 @@ export function toDevice(dispJson: Record<string, unknown>) {
 }
 
 // Funções para navegador usando localStorage ao invés de arquivos
-export function saveDeviceData(dispositivo: Dispositivo) {
+export function saveDeviceData(dispositivo: Devices) {
     const timestamp = new Date().toISOString();
     const key = `device_${dispositivo.serieSlave}_${timestamp}`;
 
@@ -94,7 +94,7 @@ export function getDeviceHistory(serieSlave: string): any[] {
         .filter((item) => item !== null);
 }
 
-export function exportToCSV(dispositivos: Dispositivo[]): string {
+export function exportToCSV(dispositivos: Devices[]): string {
     const header =
         "timestamp,type,serieSlave,macSlave,versionSlave,te,ph,pr,rd,teS,rpmS\n";
     const timestamp = new Date().toISOString();
