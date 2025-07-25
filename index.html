@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Serial Monitor - Web</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <h1>Monitor Serial - Web Serial API</h1>
+
+        <form id="serialForm">
+            <button type="button" id="connectBtn">Conectar</button>
+            <button type="button" id="disconnectBtn">Desconectar</button>
+        </form>
+
+        <div id="output">
+            <h3>Dados Recebidos:</h3>
+            <textarea id="dataOutput" rows="10" cols="80" readonly></textarea>
+        </div>
+        <script type="module" src="dist/index.js"></script>
+    </body>
+</html>

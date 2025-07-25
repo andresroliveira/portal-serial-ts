@@ -1,51 +1,45 @@
-import { SerialPort } from "serialport";
+// Type declarations for Web Serial API
+export interface SerialPort {
+    readonly readable: ReadableStream<Uint8Array>;
+    readonly writable: WritableStream<Uint8Array>;
+    getInfo(): SerialPortInfo;
+    open(options: SerialOptions): Promise<void>;
+    close(): Promise<void>;
+}
 
-export function createSerialPort(
-    portPath: string,
-    baudRate: number,
-    onData: (data: string) => void
-) {
-    const serial = new SerialPort(
-        {
-            path: portPath,
-            baudRate,
-        },
-        (err: Error | null) => {
-            if (err) {
-                console.log("Error opening port: ", err);
-                process.exit(1);
-            } else {
-                console.log("Port opened successfully");
-            }
-        }
-    );
+export interface SerialPortInfo {
+    usbVendorId?: number;
+    usbProductId?: number;
+}
 
-    serial.on("open", () => {
-        console.log("Serial port is open");
-    });
-    serial.on("error", (err: Error) => {
-        console.error("Serial port error: ", err);
-        serial.close();
-    });
-    serial.on("close", () => {
-        console.log("Serial port is closed");
-    });
-    serial.on("data", (data: Buffer) => {
-        const message = data.toString().trim();
-        onData(message);
-    });
+export interface SerialOptions {
+    baudRate: number;
+    dataBits?: number;
+    stopBits?: number;
+    parity?: "none" | "even" | "odd";
+    bufferSize?: number;
+    flowControl?: "none" | "hardware";
+}
 
-    process.on("SIGINT", () => {
-        console.log("Ending program...");
-        if (serial.isOpen) {
-            serial.close(() => {
-                console.log("Serial port closed before exiting.");
-                process.exit(0);
-            });
-        } else {
-            process.exit(0);
-        }
-    });
+export interface Serial {
+    getPorts(): Promise<SerialPort[]>;
+    requestPort(options?: SerialPortRequestOptions): Promise<SerialPort>;
+    addEventListener(type: string, listener: EventListener): void;
+    removeEventListener(type: string, listener: EventListener): void;
+}
 
-    return serial;
+export interface SerialPortRequestOptions {
+    filters?: SerialPortFilter[];
+}
+
+export interface SerialPortFilter {
+    usbVendorId?: number;
+    usbProductId?: number;
+}
+
+// Extend Navigator interface
+declare global {
+    interface Navigator {
+        serial: Serial;
+    }
 }

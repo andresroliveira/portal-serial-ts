@@ -1,0 +1,123 @@
+import { Dispositivo } from "./devices";
+export function toDevice(dispJson: Record<string, unknown>) {
+    if (
+        !dispJson.hasOwnProperty("type") ||
+        !dispJson.hasOwnProperty("serieSlave") ||
+        !dispJson.hasOwnProperty("macSlave") ||
+        !dispJson.hasOwnProperty("versionSlave") ||
+        !dispJson.hasOwnProperty("te") ||
+        !dispJson.hasOwnProperty("ph") ||
+        !dispJson.hasOwnProperty("pr") ||
+        !dispJson.hasOwnProperty("rd") ||
+        !dispJson.hasOwnProperty("teS") ||
+        !dispJson.hasOwnProperty("rpmS")
+    ) {
+        console.error("Invalid device format: missing required properties.");
+        return null;
+    }
+    if (
+        typeof dispJson.type !== "string" ||
+        typeof dispJson.serieSlave !== "string" ||
+        typeof dispJson.macSlave !== "string" ||
+        typeof dispJson.versionSlave !== "string" ||
+        typeof dispJson.te !== "string" ||
+        typeof dispJson.ph !== "string" ||
+        typeof dispJson.pr !== "string" ||
+        typeof dispJson.rd !== "string" ||
+        typeof dispJson.teS !== "string" ||
+        typeof dispJson.rpmS !== "string"
+    ) {
+        console.error("Invalid device format: properties must be strings.");
+        return null;
+    }
+
+    let type = dispJson.type.toLowerCase();
+    let serialSlave = dispJson.serieSlave.toLowerCase();
+    let macSlave = dispJson.macSlave.toLowerCase();
+    let versionSlave = dispJson.versionSlave.toLowerCase();
+    let te = parseFloat(dispJson.te);
+    let ph = parseFloat(dispJson.ph);
+    let pr = parseFloat(dispJson.pr);
+    let rd = parseFloat(dispJson.rd);
+    let teS = parseFloat(dispJson.teS);
+    let rpmS = parseFloat(dispJson.rpmS);
+
+    // Verificar se é NaN e substituir por 0
+    te = isNaN(te) ? 0 : te;
+    ph = isNaN(ph) ? 0 : ph;
+    pr = isNaN(pr) ? 0 : pr;
+    rd = isNaN(rd) ? 0 : rd;
+    teS = isNaN(teS) ? 0 : teS;
+    rpmS = isNaN(rpmS) ? 0 : rpmS;
+
+    return new Dispositivo(
+        type,
+        serialSlave,
+        macSlave,
+        versionSlave,
+        te,
+        ph,
+        pr,
+        rd,
+        teS,
+        rpmS
+    );
+}
+
+export function verifyCSVExists(directory: string, serieSlave: string) {
+    const fs = require("fs");
+    const path = require("path");
+
+    if (!fs.existsSync(directory)) {
+        fs.mkdir(directory, { recursive: true }, (err: Error) => {
+            if (err) {
+                console.error(`Failed to create directory ${directory}:`, err);
+                throw err;
+            }
+        });
+    }
+
+    const filePath = path.join(directory, `${serieSlave}.csv`);
+
+    const header =
+        "type,serieSlave,macSlave,versionSlave,te,ph,pr,rd,teS,rpmS\n";
+
+    if (!fs.existsSync(filePath)) {
+        fs.writeFile(filePath, header, (err: Error) => {
+            if (err) {
+                console.error(`Failed to create file ${filePath}:`, err);
+            } else {
+                console.log(`File ${filePath} created successfully.`);
+            }
+        });
+    }
+}
+
+export function appendCSV(directory: string, dispositivo: Dispositivo) {
+    const fs = require("fs");
+    const path = require("path");
+
+    const filePath = path.join(directory, `${dispositivo.serieSlave}.csv`);
+
+    const data =
+        [
+            dispositivo.type,
+            dispositivo.serieSlave,
+            dispositivo.macSlave,
+            dispositivo.versionSlave,
+            dispositivo.te,
+            dispositivo.ph,
+            dispositivo.pr,
+            dispositivo.rd,
+            dispositivo.teS,
+            dispositivo.rpmS,
+        ].join(",") + "\n";
+
+    fs.appendFile(filePath, data, (err: Error) => {
+        if (err) {
+            console.error(`Failed to append to file ${filePath}:`, err);
+        } else {
+            console.log(`Data appended to ${filePath} successfully.`);
+        }
+    });
+}

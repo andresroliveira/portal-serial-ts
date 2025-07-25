@@ -1,0 +1,52 @@
+// import { SerialPort } from "serialport";
+import { SerialPort } from "serialport";
+
+export function createSerialPort(
+    portPath: string,
+    baudRate: number,
+    onData: (data: string) => void
+) {
+    const serial = new SerialPort(
+        {
+            path: portPath,
+            baudRate,
+        },
+        (err: Error | null) => {
+            if (err) {
+                console.log("Error opening port: ", err);
+                process.exit(1);
+            } else {
+                console.log("Port opened successfully");
+            }
+        }
+    );
+
+    serial.on("open", () => {
+        console.log("Serial port is open");
+    });
+    serial.on("error", (err: Error) => {
+        console.error("Serial port error: ", err);
+        serial.close();
+    });
+    serial.on("close", () => {
+        console.log("Serial port is closed");
+    });
+    serial.on("data", (data: Buffer) => {
+        const message = data.toString().trim();
+        onData(message);
+    });
+
+    process.on("SIGINT", () => {
+        console.log("Ending program...");
+        if (serial.isOpen) {
+            serial.close(() => {
+                console.log("Serial port closed before exiting.");
+                process.exit(0);
+            });
+        } else {
+            process.exit(0);
+        }
+    });
+
+    return serial;
+}

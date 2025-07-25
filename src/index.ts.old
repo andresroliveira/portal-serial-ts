@@ -1,0 +1,44 @@
+import { createSerialPort } from "./serial.ts.old";
+import { Dispositivo } from "./devices";
+import { toDevice, verifyCSVExists, appendCSV } from "./helpers";
+const PORT = "COM3";
+let dispositivos: Dispositivo[] = [];
+
+function handleSerialData(message: string) {
+    let json: Record<string, unknown>;
+    try {
+        json = JSON.parse(message);
+    } catch (error) {
+        console.error("Invalid JSON received.");
+        return;
+    }
+
+    if (!json.hasOwnProperty("dispositivos")) {
+        console.error("Invalid data format: 'dispositivos' key not found.");
+        return;
+    }
+
+    if (!Array.isArray(json.dispositivos)) {
+        console.error(
+            "Invalid data format: 'dispositivos' should be an array."
+        );
+        return;
+    }
+
+    if (json.dispositivos.length < 1) {
+        console.error("No devices found.");
+        return;
+    }
+
+    const dispositivosJson = json.dispositivos;
+
+    dispositivos = dispositivosJson
+        .map(toDevice)
+        .filter((dispositivo) => dispositivo !== null);
+}
+
+function main() {
+    createSerialPort(PORT, 9600, handleSerialData);
+}
+
+(() => main())();
