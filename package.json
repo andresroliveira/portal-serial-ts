@@ -5,8 +5,8 @@
     "scripts": {
         "build": "tsc",
         "watch": "tsc -w",
-        "serve": "live-server --port=3000 --open=false",
-        "dev": "tsc && live-server --port=3000 --open=false",
+        "serve": "live-server --port=3000",
+        "dev": "tsc && live-server --port=3000",
         "start": "npm run build && npm run serve",
         "test": "echo \"Error: no test specified\" && exit 1"
     },

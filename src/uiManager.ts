@@ -202,7 +202,12 @@ export class UIManager {
 
     private initializeCharts(): void {
         const Chart = (window as any).Chart;
-        if (!Chart) return;
+        if (!Chart) {
+            console.error("Chart.js não foi carregado!");
+            return;
+        }
+
+        console.log("Inicializando gráficos...");
 
         // Common chart options with better Y-axis configuration
         const chartOptions = {
@@ -228,8 +233,8 @@ export class UIManager {
                         maxTicksLimit: 8,
                     },
                     display: true,
-                    beginAtZero: false,
-                    grace: "5%",
+                    beginAtZero: true,
+                    grace: "0%",
                 },
             },
             plugins: {
@@ -257,8 +262,10 @@ export class UIManager {
                 ...chartOptions.scales,
                 y: {
                     ...chartOptions.scales.y,
-                    suggestedMin: 0,
-                    suggestedMax: 50,
+                    beginAtZero: true,
+                    min: 0,
+                    max: 50,
+                    grace: "0%",
                     title: {
                         display: true,
                         text: "Temperatura (°C)",
@@ -274,8 +281,10 @@ export class UIManager {
                 ...chartOptions.scales,
                 y: {
                     ...chartOptions.scales.y,
-                    suggestedMin: 0,
-                    suggestedMax: 14,
+                    beginAtZero: true,
+                    min: 0,
+                    max: 14,
+                    grace: "0%",
                     title: {
                         display: true,
                         text: "pH",
@@ -291,7 +300,9 @@ export class UIManager {
                 ...chartOptions.scales,
                 y: {
                     ...chartOptions.scales.y,
-                    suggestedMin: 0,
+                    beginAtZero: true,
+                    min: 0,
+                    grace: "10%",
                     title: {
                         display: true,
                         text: "Pressão",
@@ -307,7 +318,9 @@ export class UIManager {
                 ...chartOptions.scales,
                 y: {
                     ...chartOptions.scales.y,
-                    suggestedMin: 0,
+                    beginAtZero: true,
+                    min: 0,
+                    grace: "10%",
                     title: {
                         display: true,
                         text: "RPM",
@@ -320,6 +333,7 @@ export class UIManager {
         // Quick charts
         const tempCtx = this.getElement("tempChart") as HTMLCanvasElement;
         if (tempCtx) {
+            console.log("Criando gráfico de temperatura quick...");
             this.tempChart = new Chart(tempCtx, {
                 type: "line",
                 data: {
@@ -337,10 +351,14 @@ export class UIManager {
                 },
                 options: tempOptions,
             });
+            console.log("Gráfico tempChart criado com sucesso");
+        } else {
+            console.error("Elemento tempChart não encontrado!");
         }
 
         const phCtx = this.getElement("phChart") as HTMLCanvasElement;
         if (phCtx) {
+            console.log("Criando gráfico de pH quick...");
             this.phChart = new Chart(phCtx, {
                 type: "line",
                 data: {
@@ -358,6 +376,9 @@ export class UIManager {
                 },
                 options: phOptions,
             });
+            console.log("Gráfico phChart criado com sucesso");
+        } else {
+            console.error("Elemento phChart não encontrado!");
         }
 
         // Detailed charts
@@ -365,6 +386,7 @@ export class UIManager {
             "temperatureChart"
         ) as HTMLCanvasElement;
         if (tempDetailCtx) {
+            console.log("Criando gráfico de temperatura detalhado...");
             this.temperatureChart = new Chart(tempDetailCtx, {
                 type: "line",
                 data: {
@@ -382,10 +404,14 @@ export class UIManager {
                 },
                 options: tempOptions,
             });
+            console.log("Gráfico temperatureChart criado com sucesso");
+        } else {
+            console.error("Elemento temperatureChart não encontrado!");
         }
 
         const phDetailCtx = this.getElement("pHChart") as HTMLCanvasElement;
         if (phDetailCtx) {
+            console.log("Criando gráfico de pH detalhado...");
             this.pHChart = new Chart(phDetailCtx, {
                 type: "line",
                 data: {
@@ -403,12 +429,16 @@ export class UIManager {
                 },
                 options: phOptions,
             });
+            console.log("Gráfico pHChart criado com sucesso");
+        } else {
+            console.error("Elemento pHChart não encontrado!");
         }
 
         const pressureCtx = this.getElement(
             "pressureChart"
         ) as HTMLCanvasElement;
         if (pressureCtx) {
+            console.log("Criando gráfico de pressão...");
             this.pressureChart = new Chart(pressureCtx, {
                 type: "line",
                 data: {
@@ -426,10 +456,14 @@ export class UIManager {
                 },
                 options: pressureOptions,
             });
+            console.log("Gráfico pressureChart criado com sucesso");
+        } else {
+            console.error("Elemento pressureChart não encontrado!");
         }
 
         const rpmCtx = this.getElement("rpmChart") as HTMLCanvasElement;
         if (rpmCtx) {
+            console.log("Criando gráfico de RPM...");
             this.rpmChart = new Chart(rpmCtx, {
                 type: "line",
                 data: {
@@ -447,6 +481,9 @@ export class UIManager {
                 },
                 options: rpmOptions,
             });
+            console.log("Gráfico rpmChart criado com sucesso");
+        } else {
+            console.error("Elemento rpmChart não encontrado!");
         }
     }
 
